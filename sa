@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun 🎂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pink: {
+                            soft: '#FFD6EC',
+                            main: '#FF85C2',
+                            dark: '#E84A97'
+                        },
+                        ungu: {
+                            soft: '#E8D5FF',
+                            main: '#B784FF',
+                            dark: '#8A4FFF'
+                        }
+                    },
+                    fontFamily: {
+                        birthday: ['"Comic Sans MS"', 'cursive', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-gradient-ultah {
+                background: linear-gradient(135deg, #FFD6EC 0%, #E8D5FF 100%);
+            }
+            .btn-yes {
+                transition: all 0.3s ease;
+                transform: scale(1);
+            }
+            .balon {
+                animation: naik 8s ease-in infinite;
+            }
+            @keyframes naik {
+                0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateY(-20vh) rotate(10deg); opacity: 0; }
+            }
+            .surat {
+                animation: muncul 0.6s ease-out;
+            }
+            @keyframes muncul {
+                from { transform: scale(0.8); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+            }
+            .slide {
+                display: none;
+            }
+            .slide.active {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-ultah min-h-screen font-birthday overflow-x-hidden">
+
+    <!-- Balon Hiasan -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="balon absolute text-pink-main text-4xl left-[10%] delay-0">🎈</div>
+        <div class="balon absolute text-ungu-main text-5xl left-[25%] delay-200">🎈</div>
+        <div class="balon absolute text-pink-main text-3xl left-[50%] delay-400">🎈</div>
+        <div class="balon absolute text-ungu-main text-4xl left-[70%] delay-600">🎈</div>
+        <div class="balon absolute text-pink-main text-5xl left-[85%] delay-800">🎈</div>
+    </div>
+
+    <!-- Slide 1: Pertanyaan -->
+    <section id="slide1" class="slide active w-full min-h-screen flex flex-col justify-center items-center text-center px-4 z-10 relative">
+        <h1 class="text-[clamp(2rem,6vw,3.5rem)] text-ungu-dark font-bold mb-8 drop-shadow-md">
+            Will you be my ulang tahun? 🎁
+        </h1>
+        <div class="flex gap-6 flex-wrap justify-center">
+            <button id="btnYes" class="btn-yes bg-pink-main hover:bg-pink-dark text-white text-xl px-8 py-3 rounded-full shadow-lg font-bold transition-all duration-300">
+                YES ✨
+            </button>
+            <button id="btnNo" class="bg-ungu-main hover:bg-ungu-dark text-white text-xl px-8 py-3 rounded-full shadow-lg font-bold transition-all duration-300">
+                NO 😜
+            </button>
+        </div>
+    </section>
+
+    <!-- Slide 2: Pilihan Hadiah -->
+    <section id="slide2" class="slide w-full min-h-screen flex flex-col justify-center items-center text-center px-4 z-10 relative">
+        <h2 class="text-[clamp(1.8rem,5vw,3rem)] text-ungu-dark font-bold mb-8 drop-shadow-md">
+            Pilih Hadiahmu 🎀
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-3xl">
+            <button onclick="tampilkanSurat(1)" class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl border-4 border-pink-main hover:scale-105 transition-transform duration-300">
+                <span class="text-5xl mb-3 block">🎁</span>
+                <h3 class="text-xl text-pink-dark font-semibold">Hadiah 1</h3>
+            </button>
+            <button onclick="tampilkanSurat(2)" class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl border-4 border-ungu-main hover:scale-105 transition-transform duration-300">
+                <span class="text-5xl mb-3 block">💐</span>
+                <h3 class="text-xl text-ungu-dark font-semibold">Hadiah 2</h3>
+            </button>
+            <button onclick="tampilkanSurat(3)" class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-xl border-4 border-pink-main hover:scale-105 transition-transform duration-300">
+                <span class="text-5xl mb-3 block">🍰</span>
+                <h3 class="text-xl text-pink-dark font-semibold">Hadiah 3</h3>
+            </button>
+        </div>
+    </section>
+
+    <!-- Slide 3: Surat Ucapan -->
+    <section id="slide3" class="slide w-full min-h-screen flex flex-col justify-center items-center text-center px-4 z-10 relative">
+        <div id="isiSurat" class="surat bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-2xl max-w-xl w-full border-4 border-dashed border-pink-main">
+        </div>
+        <button onclick="kembaliKePilihan()" class="mt-8 bg-ungu-main hover:bg-ungu-dark text-white px-6 py-2 rounded-full shadow-md">
+            ← Pilih Lagi
+        </button>
+    </section>
+
+    <script>
+        let ukuranYes = 1;
+
+        // Tombol NO membuat YES makin besar
+        document.getElementById('btnNo').addEventListener('click', function() {
+            ukuranYes += 0.2;
+            if (ukuranYes > 3) ukuranYes = 3;
+            document.getElementById('btnYes').style.transform = `scale(${ukuranYes})`;
+        });
+
+        // Tombol YES lanjut ke slide hadiah
+        document.getElementById('btnYes').addEventListener('click', function() {
+            gantiSlide('slide2');
+        });
+
+        // Fungsi ganti halaman/slide
+        function gantiSlide(idSlide) {
+            document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+            document.getElementById(idSlide).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Tampilkan surat sesuai hadiah yang dipilih
+        function tampilkanSurat(nomor) {
+            let teks = '';
+            if (nomor === 1) {
+                teks = `
+                    <h3 class="text-2xl text-pink-dark font-bold mb-4">🎁 Hadiah 1</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Selamat ulang tahun! 🎉 Semoga hari ini membawa kebahagiaan yang tak terhingga, kesehatan yang sempurna, dan semua impianmu perlahan terwujud. Terima kasih sudah menjadi orang yang menyenangkan! 🤍
+                    </p>
+                `;
+            } else if (nomor === 2) {
+                teks = `
+                    <h3 class="text-2xl text-ungu-dark font-bold mb-4">💐 Hadiah 2</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Selamat ulang tahun untukmu yang istimewa! 🌷 Semoga hidupmu selalu dikelilingi cinta, tawa, dan keberkahan. Semoga setiap langkah ke depannya lebih indah dari sebelumnya. Tetaplah bersinar! ✨
+                    </p>
+                `;
+            } else if (nomor === 3) {
+                teks = `
+                    <h3 class="text-2xl text-pink-dark font-bold mb-4">🍰 Hadiah 3</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Selamat ulang tahun! 🎂 Semoga usia yang bertambah ini membawa kebijaksanaan dan kebahagiaan baru. Nikmati setiap momennya, dan ingat kamu sangat berharga. Sukses dan bahagia selalu! 🥳
+                    </p>
+                `;
+            }
+            document.getElementById('isiSurat').innerHTML = teks;
+            gantiSlide('slide3');
+        }
+
+        // Kembali ke daftar hadiah
+        function kembaliKePilihan() {
+            gantiSlide('slide2');
+        }
+    </script>
+</body>
+</html>
